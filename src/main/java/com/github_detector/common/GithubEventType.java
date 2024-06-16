@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 @Getter
 public enum GithubEventType {
     PUSH("push"),
+    REPOSITORY("repository"),
+    TEAM("team"),
     OTHER("other");
 
     private static final Map<String,GithubEventType> EVENT_TO_ENUM_MAP = Arrays.stream(values())

@@ -6,15 +6,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github_detector.common.GithubActionType;
 import com.github_detector.common.GithubEventData;
 import com.github_detector.common.GithubEventType;
+import com.github_detector.services.GithubEventService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @RestController
 public class GithubEventController {
@@ -24,10 +31,13 @@ public class GithubEventController {
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private final int timeDifferenceFromGithhub;
 
+    private final GithubEventService githubEventService;
+
     private final  ObjectMapper objectMapper = new ObjectMapper();
 
-    public GithubEventController(@Value("${github-time-diff}") int timeDifferenceFromGithhub) {
+    public GithubEventController(@Value("${github-.hours-diff}") int timeDifferenceFromGithhub, @Autowired GithubEventService githubEventService) {
         this.timeDifferenceFromGithhub = timeDifferenceFromGithhub;
+        this.githubEventService = githubEventService;
     }
 
 
@@ -42,8 +52,8 @@ public class GithubEventController {
             payloadJsonNode = objectMapper.readTree(eventPayload);
 
             GithubEventData eventData = extractEventDataFromPayload(payloadJsonNode, eventType);
-
-            return null;
+            githubEventService.processGithubEvent(eventData);
+            return ResponseEntity.status(HttpStatus.OK).body("");
         }
          catch (JsonProcessingException e) {
             return ResponseEntity.badRequest().body("Invalid JSON payload");
@@ -63,7 +73,7 @@ public class GithubEventController {
 
         if (jsonNode.has("action")) {
             String action = jsonNode.path("action").asText();
-            eventData.setAction(GithubActionType.getFromString(action));
+            eventData.setGithubActionType(GithubActionType.getFromString(action));
         }
 
         if (jsonNode.has("team")) {
@@ -81,7 +91,16 @@ public class GithubEventController {
         return eventData;
     }
 
-    private LocalDateTime convertTimestampString(String timestamp){
-        return LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    private  LocalDateTime convertTimestampString(String timestamp) {
+        try {
+            long unixTimestamp = Long.parseLong(timestamp);
+            return LocalDateTime.ofInstant(Instant.ofEpochSecond(unixTimestamp),ZoneOffset.UTC);
+        } catch (NumberFormatException e) {
+            try {
+                return LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+            } catch (DateTimeParseException dtpe) {
+                throw new IllegalArgumentException("Invalid timestamp format: " + timestamp, dtpe);
+            }
+        }
     }
 }

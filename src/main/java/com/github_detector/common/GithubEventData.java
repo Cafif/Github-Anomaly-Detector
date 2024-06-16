@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class GithubEventData {
 
     private GithubEventType githubEventType;
-    private GithubActionType action;
+    private GithubActionType githubActionType;
     private String teamName;
     private String repositoryName;
     private LocalDateTime repositoryCreatedAt;

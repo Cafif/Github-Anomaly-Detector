@@ -1,2 +1,19 @@
+logging:
+  file:
+    name: logs/github-anomalies.log
 
-github-time-diff: 3
+github:
+  hours-diff: 3
+
+scanners:
+  delete-repo:
+    min-minutes: 10
+  push:
+    start-time: "00:00"
+    end-time: "03:00"
+  create-team:
+    invalid-prefixes: "hacker"
+
+notify:
+  log: true
+  console: true

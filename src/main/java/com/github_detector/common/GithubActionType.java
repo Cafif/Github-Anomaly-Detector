@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public enum GithubActionType {
     CREATE_TEAM("created"),
     DELETE_REPO("deleted"),
-    UNKNOWN("unknown");
+    OTHER("other");
 
     private static final Map<String, GithubActionType> ACTION_TO_ENUM_MAP = Arrays.stream(values())
             .collect(Collectors.toMap(GithubActionType::getActionName, action -> action));
@@ -22,6 +22,6 @@ public enum GithubActionType {
     }
 
     public static GithubActionType getFromString(String actionName) {
-        return ACTION_TO_ENUM_MAP.getOrDefault(actionName, UNKNOWN);
+        return ACTION_TO_ENUM_MAP.getOrDefault(actionName, OTHER);
     }
 }
