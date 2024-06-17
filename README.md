@@ -4,7 +4,7 @@ This app scans your organization's Github and detects suspicious activities!
 
 ##Suspicious Behaviors Detected By This App
 - Code pushed in specific hours (14:00 to 16:00 by default)
-- Teams created with suspicious prefixes ("hacker" prefix by default)
+- Teams created with suspicious names (name has a "hacker" prefix by default)
 - Repositories created and immediately deleted (within 10 minutes by default).
 
 ## How To Build, Configure & Run
