@@ -17,6 +17,7 @@ public class DeleteRepoScanner implements AnomalyScanner{
     @Override
     public AnomalyScanResult scanEvent(GithubEventData eventData) {
         AnomalyScanResult result = new AnomalyScanResult();
+
         boolean anomalyDetected = eventData.getEventTimestamp().minusMinutes(minimumMinutes).isBefore(eventData.getRepositoryCreatedAt());
         result.setAnomalyDetected(anomalyDetected);
 

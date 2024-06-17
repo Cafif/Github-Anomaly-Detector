@@ -29,19 +29,25 @@ public class GithubEventController {
 
     public static final String EVENT_TYPE_HEADER = "X-GitHub-Event";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+    private static final String INVALID_JSON_PAYLOAD = "Invalid JSON payload";
+    private static final String UNEXPECTED_ERROR = "An unexpected error occurred";
+    public static final String EVENT_PROCESSING_SUCCESS = "Github event processed";
+    public static final String INVALID_TIMESTAMP_FORMAT = "Invalid timestamp format: ";
+
+
     private final int timeDifferenceFromGithhub;
-
     private final GithubEventService githubEventService;
-
     private final  ObjectMapper objectMapper = new ObjectMapper();
 
-    public GithubEventController(@Value("${github-.hours-diff}") int timeDifferenceFromGithhub, @Autowired GithubEventService githubEventService) {
+    public GithubEventController(@Value("${github-.hours-diff}") int timeDifferenceFromGithhub,
+                                 @Autowired GithubEventService githubEventService) {
         this.timeDifferenceFromGithhub = timeDifferenceFromGithhub;
         this.githubEventService = githubEventService;
     }
 
 
-    @PostMapping("/test")
+    @PostMapping("/github-event")
     public ResponseEntity<String> handleGithubEvent(
             @RequestHeader(EVENT_TYPE_HEADER) String eventType,
             @RequestBody String eventPayload) {
@@ -53,13 +59,13 @@ public class GithubEventController {
 
             GithubEventData eventData = extractEventDataFromPayload(payloadJsonNode, eventType);
             githubEventService.processGithubEvent(eventData);
-            return ResponseEntity.status(HttpStatus.OK).body("");
+            return ResponseEntity.status(HttpStatus.OK).body(EVENT_PROCESSING_SUCCESS);
         }
          catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().body("Invalid JSON payload");
+            return ResponseEntity.badRequest().body(INVALID_JSON_PAYLOAD);
         }
         catch (Exception e) {
-            return ResponseEntity.badRequest().body("An unexpected Error occurred");
+            return ResponseEntity.badRequest().body(UNEXPECTED_ERROR);
         }
 
     }
@@ -68,7 +74,6 @@ public class GithubEventController {
         GithubEventData eventData = new GithubEventData();
 
         eventData.setGithubEventType(GithubEventType.getFromString(eventType));
-
         eventData.setEventTimestamp(LocalDateTime.now().minusHours(timeDifferenceFromGithhub));
 
         if (jsonNode.has("action")) {
@@ -82,10 +87,9 @@ public class GithubEventController {
         }
         if (jsonNode.has("repository")) {
             String repositoryName = jsonNode.path("repository").path("name").asText();
-            LocalDateTime repositoryCreatedAt = convertTimestampString(jsonNode.path("repository").path("created_at").asText());
-            eventData.setRepositoryCreatedAt(repositoryCreatedAt);
-
             eventData.setRepositoryName(repositoryName);
+
+            LocalDateTime repositoryCreatedAt = convertTimestampString(jsonNode.path("repository").path("created_at").asText());
             eventData.setRepositoryCreatedAt(repositoryCreatedAt);
         }
         return eventData;
@@ -95,11 +99,11 @@ public class GithubEventController {
         try {
             long unixTimestamp = Long.parseLong(timestamp);
             return LocalDateTime.ofInstant(Instant.ofEpochSecond(unixTimestamp),ZoneOffset.UTC);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) { //timestamp has a different format depending on the event type
             try {
                 return LocalDateTime.parse(timestamp, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
-            } catch (DateTimeParseException dtpe) {
-                throw new IllegalArgumentException("Invalid timestamp format: " + timestamp, dtpe);
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new IllegalArgumentException(INVALID_TIMESTAMP_FORMAT + timestamp, dateTimeParseException);
             }
         }
     }

@@ -13,7 +13,7 @@ public enum GithubEventType {
     TEAM("team"),
     OTHER("other");
 
-    private static final Map<String,GithubEventType> EVENT_TO_ENUM_MAP = Arrays.stream(values())
+    private static final Map<String,GithubEventType> STRING_TO_ENUM_MAP = Arrays.stream(values())
             .collect(Collectors.toMap(GithubEventType::getEventName, event -> event));
 
     private final String eventName;
@@ -24,6 +24,6 @@ public enum GithubEventType {
     }
 
     public static GithubEventType getFromString(String eventName){
-        return EVENT_TO_ENUM_MAP.getOrDefault(eventName, OTHER);
+        return STRING_TO_ENUM_MAP.getOrDefault(eventName, OTHER);
     }
 }

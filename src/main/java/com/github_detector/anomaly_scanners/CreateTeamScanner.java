@@ -17,9 +17,10 @@ public class CreateTeamScanner implements AnomalyScanner {
     @Override
     public AnomalyScanResult scanEvent(GithubEventData eventData) {
         AnomalyScanResult result = new AnomalyScanResult();
+        boolean anomalyDetected = false;
 
         String teamName = eventData.getTeamName();
-        boolean anomalyDetected = false;
+
 
         for (String prefix : invalidPrefixes) {
             if (teamName.startsWith(prefix.trim())) {

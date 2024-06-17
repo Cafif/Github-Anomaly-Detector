@@ -12,7 +12,7 @@ public enum GithubActionType {
     DELETE_REPO("deleted"),
     OTHER("other");
 
-    private static final Map<String, GithubActionType> ACTION_TO_ENUM_MAP = Arrays.stream(values())
+    private static final Map<String, GithubActionType> STRING_TO_ENUM_MAP = Arrays.stream(values())
             .collect(Collectors.toMap(GithubActionType::getActionName, action -> action));
 
     private final String actionName;
@@ -22,6 +22,6 @@ public enum GithubActionType {
     }
 
     public static GithubActionType getFromString(String actionName) {
-        return ACTION_TO_ENUM_MAP.getOrDefault(actionName, OTHER);
+        return STRING_TO_ENUM_MAP.getOrDefault(actionName, OTHER);
     }
 }

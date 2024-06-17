@@ -15,8 +15,8 @@ public class PushScanner implements AnomalyScanner{
     private LocalTime forbiddenPushStartTime;
     private LocalTime forbiddenPushEndTime;
 
-    public PushScanner(@Value("${scanners.push.start-time}") String forbiddenPushStartTime,
-                       @Value("${scanners.push.end-time}")String forbiddenPushEndTime){
+    public PushScanner(@Value("${scanners.push.forbidden-start-time}") String forbiddenPushStartTime,
+                       @Value("${scanners.push.forbidden-end-time}")String forbiddenPushEndTime){
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         this.forbiddenPushStartTime = LocalTime.parse(forbiddenPushStartTime, timeFormatter);
         this.forbiddenPushEndTime = LocalTime.parse(forbiddenPushEndTime, timeFormatter);

@@ -9,8 +9,8 @@ scanners:
   delete-repo:
     min-minutes: 10
   push:
-    start-time: "00:00"
-    end-time: "03:00"
+    forbidden-start-time: "14:00"
+    forbidden-end-time: "16:00"
   create-team:
     invalid-prefixes: "hacker"
 
