@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class DeleteRepoScanner implements AnomalyScanner{
 
     public static final String DETECTION_MESSAGE_FORMAT = "Suspicious activity detected, repository '%s' deleted within %s minutes of creation.\n Created: %s\n Deleted: %s";
-    private int minimumMinutes;
+    private final int minimumMinutes;
 
     DeleteRepoScanner(@Value("${scanners.delete-repo.min-minutes}") int minimumMinutes ){
         this.minimumMinutes = minimumMinutes;

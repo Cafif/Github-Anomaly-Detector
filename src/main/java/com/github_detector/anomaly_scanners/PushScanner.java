@@ -12,8 +12,8 @@ public class PushScanner implements AnomalyScanner{
 
     public static final String DETECTION_MESSAGE_FORMAT = "Suspicious activity detected, Push operation performed on repository: %s at a suspicious time: %s";
 
-    private LocalTime forbiddenPushStartTime;
-    private LocalTime forbiddenPushEndTime;
+    private final LocalTime forbiddenPushStartTime;
+    private final LocalTime forbiddenPushEndTime;
 
     public PushScanner(@Value("${scanners.push.forbidden-start-time}") String forbiddenPushStartTime,
                        @Value("${scanners.push.forbidden-end-time}")String forbiddenPushEndTime){
