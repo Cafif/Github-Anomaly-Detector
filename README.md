@@ -54,7 +54,7 @@ In the root directory run `java -jar target/github_detector-0.0.1-SNAPSHOT.jar`,
 ## Setup Github Organization's Webhooks To Your Local App
 
 - Setup a tool that will tunnel requests to the local port that your app is running on (8080 by default) , I used ngrok for testing.
-- Once you receive a static URL go to your Organization's Github `-> Settings -> Webhooks` and paste the static URL followed by `/github-event` in the payload URL (f.e if ngrok gave you this url: `app.ngrok-free.app` then you need the payload URL to be `app.ngrok-free.app/github-event`), change the content type to `application/json` and disable SSL.
+- Once you receive a static URL go to your Organization's Github `-> Settings -> Webhooks -> Add Webhook` and paste the static URL followed by `/github-event` in the payload URL (f.e if ngrok gave you this url: `app.ngrok-free.app` then you need the payload URL to be `app.ngrok-free.app/github-event`), change the content type to `application/json` and disable SSL.
 
 This is pretty much it, once you are doing setting up the webhook the app should be detecting suspicious activities in your organization's Github.
 
