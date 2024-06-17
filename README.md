@@ -2,7 +2,7 @@
 
 This app scans your organization's Github and detects suspicious activities!
 
-##Suspicious Behaviors Detected By This App
+## Suspicious Behaviors Detected By This App
 - Code pushed in specific hours (14:00 to 16:00 by default)
 - Teams created with suspicious names (name has a "hacker" prefix by default)
 - Repositories created and immediately deleted (within 10 minutes by default).
@@ -48,7 +48,7 @@ to change these configurations you can edit this file, or alternatively you can 
 
 
 ### Run
-In the root directory run `java -jar target/github_detector-0.0.1-SNAPSHOT.jar`, after a second or two the app should start.
+In the app's root directory, run `java -jar target/github_detector-0.0.1-SNAPSHOT.jar`, after a second or two the app should start.
 
 
 ## Setup Github Organization's Webhooks To Your Local App
